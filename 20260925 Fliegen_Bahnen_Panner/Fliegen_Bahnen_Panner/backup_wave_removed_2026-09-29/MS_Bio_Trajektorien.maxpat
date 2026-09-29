@@ -462,7 +462,7 @@
                         70.0,
                         20.0
                     ],
-                    "text": "Flug 1\u2013700"
+                    "text": "Flug 1–700"
                 }
             },
             {
@@ -658,7 +658,7 @@
             },
             {
                 "box": {
-                    "annotation": "Gesamte Auswahl inklusive Verbindungen bei Tempo 1. Loop: eine Runde inklusive R\u00fcckverbindung.",
+                    "annotation": "Gesamte Auswahl inklusive Verbindungen bei Tempo 1. Loop: eine Runde inklusive Rückverbindung.",
                     "format": 6,
                     "id": "duration",
                     "ignoreclick": 1,
@@ -754,12 +754,12 @@
                         197.0,
                         33.0
                     ],
-                    "text": "Messbahnen + Verbindungsfl\u00fcge.\nArtwechsel stoppt und setzt zur\u00fcck."
+                    "text": "Messbahnen + Verbindungsflüge.\nArtwechsel stoppt und setzt zurück."
                 }
             },
             {
                 "box": {
-                    "comment": "XY-Liste 0..1 \u2192 Panning-Switch",
+                    "comment": "XY-Liste 0..1 → Panning-Switch",
                     "id": "out",
                     "index": 0,
                     "maxclass": "outlet",
@@ -1356,7 +1356,7 @@
                         400.0,
                         34.0
                     ],
-                    "text": "Schwarmebene: Rohbahn \u2192 Verdichtung zur Leitfliege 1 \u2192 finale XY f\u00fcr Klang, Panning und Anzeige"
+                    "text": "Schwarmebene: Rohbahn → Verdichtung zur Leitfliege 1 → finale XY für Klang, Panning und Anzeige"
                 }
             }
         ],
@@ -2070,7 +2070,7 @@
                 "patchline": {
                     "source": [
                         "swarm-route",
-                        36
+                        29
                     ],
                     "destination": [
                         "js",

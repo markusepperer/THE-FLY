@@ -462,7 +462,7 @@
                         70.0,
                         20.0
                     ],
-                    "text": "Flug 1\u2013700"
+                    "text": "Flug 1–700"
                 }
             },
             {
@@ -658,7 +658,7 @@
             },
             {
                 "box": {
-                    "annotation": "Gesamte Auswahl inklusive Verbindungen bei Tempo 1. Loop: eine Runde inklusive R\u00fcckverbindung.",
+                    "annotation": "Gesamte Auswahl inklusive Verbindungen bei Tempo 1. Loop: eine Runde inklusive Rückverbindung.",
                     "format": 6,
                     "id": "duration",
                     "ignoreclick": 1,
@@ -754,12 +754,12 @@
                         197.0,
                         33.0
                     ],
-                    "text": "Messbahnen + Verbindungsfl\u00fcge.\nArtwechsel stoppt und setzt zur\u00fcck."
+                    "text": "Messbahnen + Verbindungsflüge.\nArtwechsel stoppt und setzt zurück."
                 }
             },
             {
                 "box": {
-                    "comment": "XY-Liste 0..1 \u2192 Panning-Switch",
+                    "comment": "XY-Liste 0..1 → Panning-Switch",
                     "id": "out",
                     "index": 0,
                     "maxclass": "outlet",
@@ -1280,19 +1280,12 @@
                     "patching_rect": [
                         680.0,
                         104.0,
-                        820.0,
+                        650.0,
                         22.0
                     ],
-                    "text": "route voiceid density grid gridvoices swarms densitygroup gridgroup orbitgroup ringmodegroup orbitspreadgroup pulseinnergroup pulseoutergroup pulsetempogroup pulsephasegroup pulsetempospreadgroup snakegroup snakespacinggroup alignmentgroup escapegroup escapestrengthgroup escapereturngroup portalmode portalx portaly portaldirection portalwidth portalspeed portaldeviation portalorigin wavemodegroup wavetypegroup waverungroup waveamplitudegroup wavelengthgroup wavespeedgroup wavewidthgroup",
-                    "numoutlets": 37,
+                    "text": "route voiceid density grid gridvoices swarms densitygroup gridgroup orbitgroup ringmodegroup orbitspreadgroup pulseinnergroup pulseoutergroup pulsetempogroup pulsephasegroup pulsetempospreadgroup snakegroup snakespacinggroup alignmentgroup escapegroup escapestrengthgroup escapereturngroup portalmode portalx portaly portaldirection portalwidth portalspeed portaldeviation portalorigin",
+                    "numoutlets": 30,
                     "outlettype": [
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
                         "",
                         "",
                         "",
@@ -1337,7 +1330,7 @@
                         22.0
                     ],
                     "text": "js swarm_attractor.js #2",
-                    "numinlets": 37,
+                    "numinlets": 30,
                     "numoutlets": 3,
                     "outlettype": [
                         "",
@@ -1356,7 +1349,7 @@
                         400.0,
                         34.0
                     ],
-                    "text": "Schwarmebene: Rohbahn \u2192 Verdichtung zur Leitfliege 1 \u2192 finale XY f\u00fcr Klang, Panning und Anzeige"
+                    "text": "Schwarmebene: Rohbahn → Verdichtung zur Leitfliege 1 → finale XY für Klang, Panning und Anzeige"
                 }
             }
         ],
@@ -2070,7 +2063,7 @@
                 "patchline": {
                     "source": [
                         "swarm-route",
-                        36
+                        29
                     ],
                     "destination": [
                         "js",
@@ -2423,90 +2416,6 @@
                     "destination": [
                         "maneuver_js",
                         0
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        29
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        30
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        30
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        31
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        31
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        32
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        32
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        33
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        33
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        34
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        34
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        35
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        35
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        36
                     ]
                 }
             }

@@ -1280,27 +1280,12 @@
                     "patching_rect": [
                         680.0,
                         104.0,
-                        820.0,
+                        390.0,
                         22.0
                     ],
-                    "text": "route voiceid density grid gridvoices swarms densitygroup gridgroup orbitgroup ringmodegroup orbitspreadgroup pulseinnergroup pulseoutergroup pulsetempogroup pulsephasegroup pulsetempospreadgroup snakegroup snakespacinggroup alignmentgroup escapegroup escapestrengthgroup escapereturngroup portalmode portalx portaly portaldirection portalwidth portalspeed portaldeviation portalorigin wavemodegroup wavetypegroup waverungroup waveamplitudegroup wavelengthgroup wavespeedgroup wavewidthgroup",
-                    "numoutlets": 37,
+                    "text": "route voiceid density grid gridvoices swarms densitygroup gridgroup orbitgroup ringmodegroup orbitspreadgroup pulseinnergroup pulseoutergroup pulsetempogroup pulsephasegroup pulsetempospreadgroup snakegroup snakespacinggroup alignmentgroup escapegroup escapestrengthgroup escapereturngroup",
+                    "numoutlets": 22,
                     "outlettype": [
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
                         "",
                         "",
                         "",
@@ -1337,10 +1322,9 @@
                         22.0
                     ],
                     "text": "js swarm_attractor.js #2",
-                    "numinlets": 37,
-                    "numoutlets": 3,
+                    "numinlets": 22,
+                    "numoutlets": 2,
                     "outlettype": [
-                        "",
                         "",
                         ""
                     ]
@@ -2070,7 +2054,7 @@
                 "patchline": {
                     "source": [
                         "swarm-route",
-                        36
+                        21
                     ],
                     "destination": [
                         "js",
@@ -2315,198 +2299,6 @@
                     "destination": [
                         "swarm-attractor",
                         21
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        21
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        22
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        22
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        23
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        23
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        24
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        24
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        25
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        25
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        26
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        26
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        27
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        27
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        28
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        28
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        29
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-attractor",
-                        2
-                    ],
-                    "destination": [
-                        "maneuver_js",
-                        0
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        29
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        30
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        30
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        31
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        31
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        32
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        32
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        33
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        33
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        34
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        34
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        35
-                    ]
-                }
-            },
-            {
-                "patchline": {
-                    "source": [
-                        "swarm-route",
-                        35
-                    ],
-                    "destination": [
-                        "swarm-attractor",
-                        36
                     ]
                 }
             }
