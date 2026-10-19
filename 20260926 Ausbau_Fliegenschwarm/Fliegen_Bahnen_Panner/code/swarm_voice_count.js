@@ -38,7 +38,11 @@ var initializationTask = new Task(finishInitialization, this);
 var pendingEntry = null;
 var deliveryPhase = 0;
 var voiceActive = [];
-for (var voiceStateIndex = 0; voiceStateIndex <= maximum; voiceStateIndex++) voiceActive[voiceStateIndex] = false;
+var voiceMoving = [];
+for (var voiceStateIndex = 0; voiceStateIndex <= maximum; voiceStateIndex++) {
+    voiceActive[voiceStateIndex] = false;
+    voiceMoving[voiceStateIndex] = false;
+}
 
 function clampCount(v) {
     v = Math.floor(Number(v));
@@ -115,6 +119,9 @@ function deliverNext() {
         if (command.name === "active" && command.args.length) {
             voiceActive[pendingEntry.voice] = Number(command.args[0]) !== 0;
         }
+        if (command.name === "start" || command.name === "stop") {
+            voiceMoving[pendingEntry.voice] = command.name === "start";
+        }
     }
     pendingEntry = null;
     deliveryPhase = 0;
@@ -124,7 +131,9 @@ function deliverNext() {
 function reportMoving() { outlet(1, "set", movingCount); }
 
 function applyMovement() {
- var e=[]; for(var v=1;v<=current;v++) e.push({voice:v,commands:[{name:v<=movingCount?"start":"stop",args:[]}]}); beginDelivery(e);
+    // A movement edit may interrupt an unfinished activation queue. Rebuild
+    // both activation and movement from commands actually delivered to poly~.
+    setCount(current);
 }
 
 
@@ -141,6 +150,10 @@ function formationStateCommands() {
     return commands;
 }
 
+function restoreDeliveryTarget() {
+    sendTarget(deliveryPhase === 1 && pendingEntry ? pendingEntry.voice : selectedTarget);
+}
+
 function formationUpdateEntries(commands) {
     // Formation state is global and safe to broadcast. Sending it through the
     // per-voice delivery queue made 50 voices change one after another and a
@@ -149,7 +162,7 @@ function formationUpdateEntries(commands) {
     for (var i = 0; i < commands.length; i++) {
         sendCommand(commands[i].name, commands[i].args);
     }
-    sendTarget(selectedTarget);
+    restoreDeliveryTarget();
 }
 
 function finishInitialization() {
@@ -249,9 +262,14 @@ function setCount(v) {
             ]});
         } else if (shouldBeActive) {
             // A changed swarm size gives every remaining voice a new, centered grid slot.
-            activationEntries.push({voice:voice, commands:[
+            var existingCommands = [
                 {name:"gridvoices", args:[current]}, {name:"swarms", args:[swarmCount]}
-            ]});
+            ];
+            var shouldMove = swarmRunning && voice <= movingCount;
+            if (voiceMoving[voice] !== shouldMove) {
+                existingCommands.push({name:shouldMove ? "start" : "stop", args:[]});
+            }
+            activationEntries.push({voice:voice, commands:existingCommands});
         } else if (voiceActive[voice]) {
             activationEntries.push({voice:voice, commands:[
                 {name:"stop", args:[]},
@@ -308,9 +326,8 @@ function anything() {
         swarmRunning=true; applyMovement(); return;
     }
     if (messagename === "stop" && selectedTarget === 0) {
-        swarmRunning=false; var e=[];
-        for(var sv=1;sv<=current;sv++) e.push({voice:sv,commands:[{name:"stop",args:[]}]});
-        beginDelivery(e); return;
+        swarmRunning=false;
+        applyMovement(); return;
     }
 
     if (messagename === "swarms" && args.length) {

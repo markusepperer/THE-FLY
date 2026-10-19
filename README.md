@@ -33,4 +33,4 @@ Der aktuelle Forschungs- und Teststand enthält Änderungen bis **5. Oktober 202
 
 Die Funktionen sind im Code und im Hauptpatch angebunden. Eine abschließende Prüfung aller Kombinationen steht aus. Eine geführte Performance-Oberfläche und ein vollständiges Preset-System für die erweiterten Schwarmparameter sind noch offen.
 
-Der ältere Projektstand bleibt im Ordner `20260925 Fliegen_Bahnen_Panner` erhalten. Für die aktuelle Entwicklung den oben verlinkten Projektstand verwenden.
+Der ältere Projektstand und die Entwicklungssicherungen sind als ZIP-Archive erhalten. Im aktiven Max-Projekt liegen ausschließlich die aktuellen Patches und Skripte. Für die aktuelle Entwicklung die oben verlinkte Projektdatei öffnen.
