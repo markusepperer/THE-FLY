@@ -38,10 +38,8 @@ var initializationTask = new Task(finishInitialization, this);
 var pendingEntry = null;
 var deliveryPhase = 0;
 var voiceActive = [];
-var voiceMoving = [];
 for (var voiceStateIndex = 0; voiceStateIndex <= maximum; voiceStateIndex++) {
     voiceActive[voiceStateIndex] = false;
-    voiceMoving[voiceStateIndex] = false;
 }
 
 function clampCount(v) {
@@ -86,13 +84,57 @@ function shuffledIntegers(first, last) {
     return values;
 }
 
+// Pending setup must survive later Moving, tempo, gain and flight edits.
+// Replace only superseded commands for the same voice/parameter; Start and
+// Stop describe one shared state. Preserve ordering inside each new payload.
+function commandKey(command) {
+    if (command.name === "start" || command.name === "stop") return "motion";
+    return command.name + (/group$/.test(command.name) ? ":" + command.args[0] : "");
+}
+
+function mergeCommands(previous, incoming) {
+    var replaced = {}, result = [], i;
+    for (i = 0; i < incoming.length; i++) replaced[commandKey(incoming[i])] = true;
+    for (i = 0; i < previous.length; i++) {
+        if (!replaced[commandKey(previous[i])]) result.push(previous[i]);
+    }
+    return result.concat(incoming);
+}
+
+function queuedEntries() {
+    return (pendingEntry ? [pendingEntry] : []).concat(deliveryQueue);
+}
+
+function scheduledActive(voice) {
+    var active = voiceActive[voice], entries = queuedEntries();
+    for (var i = 0; i < entries.length; i++) {
+        if (entries[i].voice !== voice) continue;
+        for (var j = 0; j < entries[i].commands.length; j++) {
+            var command = entries[i].commands[j];
+            if (command.name === "active") active = Number(command.args[0]) !== 0;
+        }
+    }
+    return active;
+}
+
 function beginDelivery(entries) {
+    if (!entries.length) return;
+    var all = queuedEntries().concat(entries), merged = [], positions = {};
+    for (var i = 0; i < all.length; i++) {
+        var entry = all[i], key = String(entry.voice);
+        if (typeof positions[key] === "undefined") {
+            positions[key] = merged.length;
+            merged.push({voice:entry.voice, commands:entry.commands.slice(0)});
+        } else {
+            var existing = merged[positions[key]];
+            existing.commands = mergeCommands(existing.commands, entry.commands);
+        }
+    }
     deliveryTask.cancel();
-    deliveryQueue = entries;
+    deliveryQueue = merged;
     pendingEntry = null;
     deliveryPhase = 0;
-    // Also defer the first target. Emitting it re-entrantly from the incoming
-    // Start/Moving message caused voice 1 to miss its payload.
+    // Install target and send payload on separate scheduler turns.
     deliveryTask.schedule(5);
 }
 
@@ -119,9 +161,6 @@ function deliverNext() {
         if (command.name === "active" && command.args.length) {
             voiceActive[pendingEntry.voice] = Number(command.args[0]) !== 0;
         }
-        if (command.name === "start" || command.name === "stop") {
-            voiceMoving[pendingEntry.voice] = command.name === "start";
-        }
     }
     pendingEntry = null;
     deliveryPhase = 0;
@@ -133,7 +172,7 @@ function reportMoving() { outlet(1, "set", movingCount); }
 function applyMovement() {
     // A movement edit may interrupt an unfinished activation queue. Rebuild
     // both activation and movement from commands actually delivered to poly~.
-    setCount(current);
+    if (initialized) setCount(current);
 }
 
 
@@ -167,48 +206,10 @@ function formationUpdateEntries(commands) {
 
 function finishInitialization() {
     if (initialized) return;
-    current = pendingInitialCount;
-    // Wait until poly~ has created every voice. Target and payload are then
-    // delivered in separate scheduler turns by the common queue.
-    var initializationEntries = [];
-    for (var voice = 1; voice <= maximum; voice++) {
-        if (voice <= current) {
-            initializationEntries.push({voice:voice, commands:[
-                {name:"loop", args:[1]},
-                {name:"density", args:[swarmDensity]},
-                {name:"grid", args:[swarmGrid]},
-                {name:"gridvoices", args:[current]},
-                {name:"swarms", args:[swarmCount]},
-                {name:"densitygroup", args:[1,swarmDensities[1]]}, {name:"densitygroup", args:[2,swarmDensities[2]]}, {name:"densitygroup", args:[3,swarmDensities[3]]}, {name:"densitygroup", args:[4,swarmDensities[4]]},
-                {name:"gridgroup", args:[1,swarmGrids[1]]}, {name:"gridgroup", args:[2,swarmGrids[2]]}, {name:"gridgroup", args:[3,swarmGrids[3]]}, {name:"gridgroup", args:[4,swarmGrids[4]]},
-                {name:"orbitgroup", args:[1,orbitTempos[1]]}, {name:"orbitgroup", args:[2,orbitTempos[2]]}, {name:"orbitgroup", args:[3,orbitTempos[3]]}, {name:"orbitgroup", args:[4,orbitTempos[4]]},
-                {name:"ringmodegroup", args:[1,ringModes[1]]}, {name:"ringmodegroup", args:[2,ringModes[2]]}, {name:"ringmodegroup", args:[3,ringModes[3]]}, {name:"ringmodegroup", args:[4,ringModes[4]]},
-                {name:"orbitspreadgroup", args:[1,ringSpreads[1]]}, {name:"orbitspreadgroup", args:[2,ringSpreads[2]]}, {name:"orbitspreadgroup", args:[3,ringSpreads[3]]}, {name:"orbitspreadgroup", args:[4,ringSpreads[4]]},
-                {name:"pulseinnergroup",args:[1,pulseInners[1]]},{name:"pulseinnergroup",args:[2,pulseInners[2]]},{name:"pulseinnergroup",args:[3,pulseInners[3]]},{name:"pulseinnergroup",args:[4,pulseInners[4]]},
-                {name:"pulseoutergroup",args:[1,pulseOuters[1]]},{name:"pulseoutergroup",args:[2,pulseOuters[2]]},{name:"pulseoutergroup",args:[3,pulseOuters[3]]},{name:"pulseoutergroup",args:[4,pulseOuters[4]]},
-                {name:"pulsetempogroup",args:[1,pulseTempos[1]]},{name:"pulsetempogroup",args:[2,pulseTempos[2]]},{name:"pulsetempogroup",args:[3,pulseTempos[3]]},{name:"pulsetempogroup",args:[4,pulseTempos[4]]},
-                {name:"pulsephasegroup",args:[1,pulsePhases[1]]},{name:"pulsephasegroup",args:[2,pulsePhases[2]]},{name:"pulsephasegroup",args:[3,pulsePhases[3]]},{name:"pulsephasegroup",args:[4,pulsePhases[4]]},
-                {name:"pulsetempospreadgroup",args:[1,pulseTempoSpreads[1]]},{name:"pulsetempospreadgroup",args:[2,pulseTempoSpreads[2]]},{name:"pulsetempospreadgroup",args:[3,pulseTempoSpreads[3]]},{name:"pulsetempospreadgroup",args:[4,pulseTempoSpreads[4]]},
-                {name:"snakegroup",args:[1,snakeStates[1]]},{name:"snakegroup",args:[2,snakeStates[2]]},{name:"snakegroup",args:[3,snakeStates[3]]},{name:"snakegroup",args:[4,snakeStates[4]]},
-                {name:"snakespacinggroup",args:[1,snakeSpacings[1]]},{name:"snakespacinggroup",args:[2,snakeSpacings[2]]},{name:"snakespacinggroup",args:[3,snakeSpacings[3]]},{name:"snakespacinggroup",args:[4,snakeSpacings[4]]},
-                {name:"snakedeviationgroup",args:[1,snakeDeviations[1]]},{name:"snakedeviationgroup",args:[2,snakeDeviations[2]]},{name:"snakedeviationgroup",args:[3,snakeDeviations[3]]},{name:"snakedeviationgroup",args:[4,snakeDeviations[4]]},
-                {name:"alignmentgroup",args:[1,alignments[1]]},{name:"alignmentgroup",args:[2,alignments[2]]},{name:"alignmentgroup",args:[3,alignments[3]]},{name:"alignmentgroup",args:[4,alignments[4]]},
-                {name:"escapestrengthgroup",args:[1,escapeStrengths[1]]},{name:"escapestrengthgroup",args:[2,escapeStrengths[2]]},{name:"escapestrengthgroup",args:[3,escapeStrengths[3]]},{name:"escapestrengthgroup",args:[4,escapeStrengths[4]]},
-                {name:"escapereturngroup",args:[1,escapeReturns[1]]},{name:"escapereturngroup",args:[2,escapeReturns[2]]},{name:"escapereturngroup",args:[3,escapeReturns[3]]},{name:"escapereturngroup",args:[4,escapeReturns[4]]},
-                {name:"gain",args:[0]},{name:"portalmode",args:[portalMode]},{name:"portalx",args:[portalX]},{name:"portaly",args:[portalY]},{name:"portaldirection",args:[portalDirection]},{name:"portalwidth",args:[portalWidth]},{name:"portalspeed",args:[portalSpeed]},{name:"portaldeviation",args:[portalDeviation]},{name:"portalorigin",args:[1]},{name:"active",args:[1]},{name:"gain",args:[1]},
-                {name:"stop", args:[]}
-            ]});
-        } else {
-            initializationEntries.push({voice:voice, commands:[
-                {name:"stop", args:[]},
-                {name:"active", args:[0]}
-            ]});
-        }
-    }
-    movingCount = 0;
-    reportMoving();
     initialized = true;
-    beginDelivery(initializationEntries);
+    // Preserve edits made during cold loading and use the same reconciliation
+    // as every later count/movement edit. Never reset the requested motion here.
+    setCount(pendingInitialCount);
 }
 
 function setCount(v) {
@@ -222,10 +223,8 @@ function setCount(v) {
         return;
     }
 
-    // Reconcile against commands that were actually delivered. Number boxes can
-    // emit many intermediate counts while being dragged; beginDelivery cancels
-    // the older queue, so deriving changes only from the previous requested
-    // count used to leave audible voices behind.
+    // Reconcile actual and queued activation, retaining unfinished setup and
+    // replacing stale movement decisions with the latest requested state.
     current = v;
     movingCount = Math.min(movingCount, current);
     if (movingCount === 0) swarmRunning = false;
@@ -234,7 +233,7 @@ function setCount(v) {
     var activationEntries = [];
     for (var voice = 1; voice <= maximum; voice++) {
         var shouldBeActive = voice <= current;
-        if (shouldBeActive && !voiceActive[voice]) {
+        if (shouldBeActive && !scheduledActive(voice)) {
             activationEntries.push({voice:voice, commands:[
                 {name:"loop", args:[1]},
                 {name:"density", args:[swarmDensity]},
@@ -266,11 +265,9 @@ function setCount(v) {
                 {name:"gridvoices", args:[current]}, {name:"swarms", args:[swarmCount]}
             ];
             var shouldMove = swarmRunning && voice <= movingCount;
-            if (voiceMoving[voice] !== shouldMove) {
-                existingCommands.push({name:shouldMove ? "start" : "stop", args:[]});
-            }
+            existingCommands.push({name:shouldMove ? "start" : "stop", args:[]});
             activationEntries.push({voice:voice, commands:existingCommands});
-        } else if (voiceActive[voice]) {
+        } else {
             activationEntries.push({voice:voice, commands:[
                 {name:"stop", args:[]},
                 {name:"active", args:[0]}
@@ -316,7 +313,8 @@ function anything() {
 
     if (messagename === "moving" && args.length) {
         var m=Math.floor(Number(args[0])); if(!isFinite(m)) return;
-        movingCount=Math.max(0,Math.min(current,m)); reportMoving();
+        var availableCount = initialized ? current : pendingInitialCount;
+        movingCount=Math.max(0,Math.min(availableCount,m)); reportMoving();
         // Moving is itself the motion control: values above zero run that many
         // voices, zero stops the whole active swarm.
         swarmRunning = movingCount > 0;
@@ -539,17 +537,18 @@ function anything() {
         return;
     }
 
+    // Route ordinary controls through the same queue. A synchronous broadcast
+    // here could steal poly~'s target between a deferred target and its payload.
+    var controlEntries = [];
     if (selectedTarget === 0) {
-        // Broadcast only to voices that belong to the current swarm.
-        for (var voice = 1; voice <= current; voice++) {
-            sendTarget(voice);
-            sendCommand(messagename, args);
+        var controlCount = initialized ? current : pendingInitialCount;
+        for (var voice = 1; voice <= controlCount; voice++) {
+            controlEntries.push({voice:voice, commands:[{name:messagename, args:args}]});
         }
-        sendTarget(0);
     } else {
-        sendTarget(selectedTarget);
-        sendCommand(messagename, args);
+        controlEntries.push({voice:selectedTarget, commands:[{name:messagename, args:args}]});
     }
+    beginDelivery(controlEntries);
 }
 
 function notifydeleted() {
