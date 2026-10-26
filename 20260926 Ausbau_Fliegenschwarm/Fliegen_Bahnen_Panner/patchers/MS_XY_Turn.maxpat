@@ -31,7 +31,7 @@
                     "numinlets": 1,
                     "numoutlets": 0,
                     "patching_rect": [ 35.0, 42.0, 640.0, 33.0 ],
-                    "text": "Outlet 1: Betrag 0..1 (0 = gerade, 1 = 180°). Outlet 2: vorzeichenbehaftet -1..1. Bewegungen < 0.0005 werden ignoriert."
+                    "text": "Linkes Outlet: signed -1..1. Rechtes Outlet: Betrag 0..1 (1 = 180°). Schritte <= 0.0005 sperren die Ausgabe; letzter Wert bleibt erhalten."
                 }
             },
             {

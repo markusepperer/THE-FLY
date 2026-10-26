@@ -1376,7 +1376,7 @@
                         400.0,
                         34.0
                     ],
-                    "text": "Schwarmebene: Rohbahn → Verdichtung zur Leitfliege 1 → finale XY für Klang, Panning und Anzeige"
+                    "text": "Schwarmebene: Rohbahn → Schwarmbewegung. Outlet 1: Raum-XY für Panning/Anzeige und XY-Mappings. Outlet 2: Analyse-XY für Manöver."
                 }
             }
         ],

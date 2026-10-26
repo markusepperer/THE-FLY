@@ -2,7 +2,8 @@ autowatch=1;
 inlets=2;
 outlets=5;
 
-// inlet 0: XY list [x y] actually sent to #1_Flugkoordinaten
+// inlet 0: continuous analysis XY [x y] from swarm_attractor outlet 1 (zero-based).
+// #1_Flugkoordinaten uses its separate spatial outlet 0.
 // inlet 1: metadata [species flight measured scale_per_m source_time_ms]
 // outlet 0: Maneuver intensity 0..1
 // outlet 1: Turn intensity 0..1

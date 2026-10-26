@@ -19,7 +19,7 @@
                     "numinlets": 1,
                     "numoutlets": 0,
                     "patching_rect": [ 546.0, 74.5, 262.0, 234.0 ],
-                    "text": "Jede Fliege besitzt eine charakteristische Flügelschlagfrequenz, die aufgrund von Morphologie und aktuellem Flugzustand variiert; darüber liegt eine langsame, unregelmäßige Variation der Schlagfrequenz.\n\nDer interessante Punkt für deinen Patch ist aber noch etwas anderes: 180–260 Hz um einen Mittelpunkt von 220 Hz entsprechen ungefähr ±18 %. Das liegt ziemlich genau in der Größenordnung der schnellen Frequenzvariation, die Farnell für Fliegen als klanglich relevant beschreibt. Er spricht davon, dass die Flügelfrequenz rasch um ungefähr 20 % variieren kann. Das passt also erstaunlich gut zu dem Bereich, den wir klanglich gewählt haben."
+                    "text": "Langsame, unregelmäßige Grundfrequenzdrift: drunk erzeugt Ziele im Bereich 160–220 Hz. line startet bei 230 Hz und fährt zum ersten Ziel. Speed-Zuschlag, Rauschmodulation und Doppler werden außerhalb dieser Abstraktion ergänzt. Der Zielbereich ist daher nicht der Gesamtbereich der hörbaren Flügelfrequenz."
                 }
             },
             {
@@ -73,7 +73,7 @@
                     "numinlets": 1,
                     "numoutlets": 0,
                     "patching_rect": [ 397.32142478227615, 609.8214227557182, 620.0, 20.0 ],
-                    "text": "200–360 Hz, max. Schritt ±6-14 Hz, Rampendauer 2–7 s. Nächster Zielwert erst nach Ende der Rampe."
+                    "text": "Zielbereich 160–220 Hz, Schrittlimit zufällig 4–14 Hz, Rampen 2–7 s. Nächstes Ziel nach Rampenende."
                 }
             },
             {

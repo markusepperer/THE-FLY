@@ -422,7 +422,7 @@
 						780.0,
 						20.0
 					],
-					"text": "P1 0.30–0.60; P2 bewegt sich nur begrenzt davon weg; P3 muss Hauptpeak 0.65–1.00 werden."
+					"text": "P1 0.30–0.60; P2 variiert begrenzt; P3 0.65–1.00. P5 kann einen weiteren Peak bilden."
 				}
 			},
 			{
@@ -437,7 +437,7 @@
 						780.0,
 						20.0
 					],
-					"text": "P4 fällt; P5 darf kleiner Nachimpuls sein; P6 fällt auf maximal 0.20. Domain standardmäßig 60–140 ms."
+					"text": "P4 fällt; P5 kann ein Nachimpuls sein; P6 endet bei höchstens 0.20. Geladene Domain: 60–500 ms."
 				}
 			}
 		],

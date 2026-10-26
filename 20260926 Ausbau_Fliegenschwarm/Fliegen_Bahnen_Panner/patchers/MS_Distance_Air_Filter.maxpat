@@ -29,7 +29,7 @@
                     "numinlets": 1,
                     "numoutlets": 0,
                     "patching_rect": [ 30.0, 42.0, 600.0, 33.0 ],
-                    "text": "Verwendet die reale Entfernung zum Hörplatz. Bypass ist vollständig neutral; Amount 0 lässt auch im aktiven Zustand die Klangfarbe praktisch unverändert."
+                    "text": "Entfernung im modellierten Hörraum. Bypass = direkter Audioweg; Amount 0 = weiterhin Tiefpass bei 18 kHz."
                 }
             },
             {
@@ -256,7 +256,7 @@
                     "numinlets": 1,
                     "numoutlets": 0,
                     "patching_rect": [ 250.0, 405.0, 420.0, 47.0 ],
-                    "text": "Nah: bis 18 kHz. Fern: bei Amount 1 bis ca. 7 kHz. 120 ms Glättung verhindert hörbare Parametersprünge. Der Filter verändert keine Lautstärkehüllkurve."
+                    "text": "Nah: 18 kHz. Fern: bei Amount 1 bis 3,5 kHz. 120 ms Glättung. Wirkt auf den gesamten Monoklang."
                 }
             }
         ],

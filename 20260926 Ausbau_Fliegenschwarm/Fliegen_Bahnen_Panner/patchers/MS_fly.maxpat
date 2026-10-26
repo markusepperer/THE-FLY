@@ -1244,7 +1244,7 @@
 										780.2469758987427,
 										543.0
 									],
-									"text": "Wir haben jetzt keinen Noise-Generator und keinen zusätzlichen Filter gebaut, sondern eine zweite bewegungsabhängige Kopplung zwischen der realen Flugbahn und Farnells Flügelsynthese.\n\nMS_XY_Turn nimmt jeweils zwei aufeinanderfolgende Bewegungsvektoren der Fliege und berechnet den Winkel zwischen ihnen. Intern geschieht das über atan2(cross, dot) / π. Der Betrag davon ist unsere Wendungsstärke.\n\nDamit bedeutet das rechte Outlet jetzt:\n\n0 → Flugrichtung bleibt praktisch gleich\n0.25 → etwa 45° Richtungsänderung\n0.5 → etwa 90°\n1 → etwa 180° Umkehr\n\nSehr kleine Bewegungen unter 0.0005 werden ignoriert, damit Positionsrauschen nicht als Wendung interpretiert wird.\n\nDieser Turn-Wert geht dann in MS_fly. Dort wird er zu einem Signal gemacht und geglättet. Entscheidend ist aber, wo er eingreift: Er wird zu Farnells bereits vorhandener kleinen Frequenzabweichung von Flügel 2 addiert. Der bestehende Offset kommt aus noise-res → ... → *~ 3; unser Turn-Signal kommt zusätzlich dazu. Danach geht die Summe in freq2-sum, also ausschließlich in die Frequenz von flywing_R.\n\nDas heißt klanglich:\n\nGerade Flugbahn:\nlinker und rechter Flügel bleiben relativ ähnlich gestimmt.\n\nStarke Kurve:\nFlügel 2 wird kurzfristig etwas stärker gegenüber Flügel 1 verstimmt.\n\nDadurch entstehen mehr Schwebungen, Phasenbewegung, spektrale Unruhe und dieses etwas rauere „bsss“. Wir mischen also kein Rauschen hinein. Der Klang wird rauer, weil die zwei bereits vorhandenen synthetischen Flügel kurzfristig weniger synchron zueinander sind.\n\nUnd damit haben wir momentan drei unterschiedliche Informationen aus derselben realen Flugbahn:\n\nPosition → Quadrophonie / Klangort\n\nGeschwindigkeit → Lautstärke + gemeinsame Flügelresonanz\n\nRichtungsänderung → Unterschied zwischen linkem und rechtem Flügel\n\nDas ist eigentlich der interessante Punkt an dem System: Die Parameter sind nicht bloß drei Random-Modulatoren. Unterschiedliche Eigenschaften derselben gemessenen biologischen Bewegung steuern unterschiedliche Eigenschaften des Klangs."
+									"text": "BEWEGUNG UND FLÜGELKLANG\n\nRaum-XY steuert Panning, Entfernung, Orientierung und einfache XY-Ableitungen. Die Manöveranalyse erhält einen getrennt aufbereiteten Koordinatenstrom.\n\nMS_XY_Turn: linkes Outlet = signed -1..1; rechtes Outlet = Betrag 0..1. 0.25 entspricht 45°, 0.5 entspricht 90°, 1 entspricht 180°. Schritte <= 0.0005 sperren die Ausgabe; nachfolgende Zweige halten ihren letzten Wert.\n\nTurn-Betrag → geglätteter Zuschlag von 0–1 Hz ausschließlich zu Flügel 2, zusätzlich zur langsamen Rauschverstimmung. Signed Turn → gegensinnige Flügel-Gains 0.6–1.4; beide Flügel werden anschließend zu Mono summiert.\n\nDer XY-Bewegungsschritt steuert die nichtlineare Flügelformung, keine klassische Filterresonanz. ManeuverSpeed steuert unter anderem Frequenzzuschlag, Gesamtpegel und Rauschanteile. Die Fliege enthält neben dem periodischen Flügelton auch Flutter- und Luftgeräusch.\n\nDie Zuordnungen sind künstlerische Sonifikation der Bewegung und keine Messung des tatsächlichen Flügelschlags."
 								}
 							}
 						],
@@ -2866,7 +2866,7 @@
 										160.0,
 										33.0
 									],
-									"text": "zwischen sum-wings und dem bisherigen *~ einsetzen"
+									"text": "Flügelsumme → Teiltonfilter → Filter/Bypass-Auswahl → Ducking"
 								}
 							},
 							{
@@ -8244,7 +8244,7 @@
 										470.0,
 										20.0
 									],
-									"text": "ManeuverAccel: Betrag beim Flatter-Trigger abtasten und als Pulsbreite halten"
+									"text": "Accel-Betrag beim Buzz abtasten: 0.5–0.1. Aktuell am rect~-Sync; PW-Wirkung noch prüfen."
 								}
 							},
 							{
@@ -13230,7 +13230,7 @@
 										251.0,
 										33.0
 									],
-									"text": "Menge 1 = kalibrierter Bereich 0.005–0.08. Menge 0 schaltet nur diesen Grundanteil aus."
+									"text": "Menge 1: Ziel-Gain 0.004–0.042. Menge startet bei 2: 0.008–0.084. Menge 0 schaltet den Luftanteil aus."
 								}
 							}
 						],
@@ -13554,7 +13554,7 @@
 										650.0,
 										33.0
 									],
-									"text": "Axial zur Hörposition: mehr Grundton. Seitlich: relativ mehr zweite/höhere Harmonische. Gesamtpegel bleibt annähernd konstant."
+									"text": "Axial zur Hörposition: tiefer Zweig betont. Seitlich: hoher Zweig betont. Keine exakte Gesamtpegel-Normierung."
 								}
 							},
 							{
@@ -13987,7 +13987,7 @@
 										418.0,
 										47.0
 									],
-									"text": "Pivot ca. 300 Hz · maximale Neigung ±1.5 dB · 80 ms Glättung. Bei Stillstand bleibt die letzte Orientierung erhalten; nahe der Mitte wird neutral gefiltert."
+									"text": "Pivot ca. 300 Hz · bei Amount 1 je Zweig ±3 dB · 80 ms Glättung. Stillstand hält die Orientierung; nahe der Mitte bei Bewegung neutral."
 								}
 							}
 						],
